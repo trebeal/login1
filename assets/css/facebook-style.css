@@ -1,0 +1,278 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #1c1e21;
+  }
+  
+  .registration-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 432px;
+    text-align: center;
+  }
+
+  /* Contenedor principal */
+.registration-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 432px;
+    margin: auto;
+  }
+  
+  /* Campos de nombre - ahora perfectamente alineados */
+  .name-fields {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .name-fields input {
+    flex: 1;
+    height: 40px; /* Altura fija */
+    padding: 11px;
+    font-size: 15px;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    background: #f5f6f7;
+  }
+  
+  /* Campos individuales - alineación perfecta */
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    height: 40px;
+    padding: 11px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    background: #f5f6f7;
+    box-sizing: border-box; /* Importante para el cálculo del ancho */
+  }
+  
+  /* Selectores de fecha - ahora alineados */
+  .birthday-selectors {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .birthday-selectors select {
+    flex: 1;
+    height: 40px;
+    padding: 0 8px;
+    font-size: 15px;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    background: #f5f6f7;
+  }
+  
+  /* Opciones de género - alineación corregida */
+  .gender-options {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0 15px;
+  }
+  
+  .gender-options label {
+    flex: 1;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    box-sizing: border-box;
+  }
+  
+  .gender-options input {
+    margin: 0;
+    width: auto;
+  }
+  
+  h1 {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .subtitle {
+    color: #606770;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 10px;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    font-size: 15px;
+    background: #f5f6f7;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px #e7f3ff;
+  }
+  
+  .name-fields {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .name-fields input {
+    flex: 1;
+  }
+  
+  .birthday-field, .gender-field {
+    text-align: left;
+    margin: 10px 0;
+  }
+  
+  .birthday-field label, .gender-field label {
+    display: block;
+    color: #606770;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+  
+  .birthday-selectors {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .birthday-selectors select {
+    flex: 1;
+    height: 36px;
+    font-size: 15px;
+  }
+  
+  .gender-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+  
+  .gender-options label {
+    flex: 1;
+    border: 1px solid #ccd0d5;
+    border-radius: 5px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .gender-options input {
+    width: auto;
+    margin: 0;
+  }
+  
+  .disclaimer, .terms {
+    font-size: 11px;
+    color: #777;
+    text-align: left;
+    margin: 10px 0;
+  }
+  
+  .terms {
+    margin-bottom: 20px;
+  }
+  
+  a {
+    color: #385898;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .register-btn {
+    background-color: #00a400;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 16px;
+    width: 194px;
+    cursor: pointer;
+    margin: 10px 0;
+  }
+  
+  .register-btn:hover {
+    background-color: #008c00;
+  }
+  
+  .login-link {
+    margin-top: 20px;
+    border-top: 1px solid #dadde1;
+    padding-top: 20px;
+  }
+  
+  .login-link a {
+    font-weight: bold;
+    font-size: 17px;
+  }
+
+  /* Estilos para los grupos de inputs */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+  }
+  
+  /* Labels flotantes */
+  .input-group label {
+    position: absolute;
+    top: 13px;
+    left: 12px;
+    color: #8d949e;
+    font-size: 13px;
+    pointer-events: none;
+    transition: all 0.2s;
+  }
+  
+  .input-group input:focus + label,
+  .input-group input:not(:placeholder-shown) + label {
+    top: 6px;
+    font-size: 11px;
+  }
+  
+  /* Mensajes de error */
+  .error-message {
+    color: #ff4d4f;
+    font-size: 11px;
+    margin-top: 4px;
+    display: none;
+  }
+  
+  .input-group.error .error-message {
+    display: block;
+  }
+  
+  .input-group.error input,
+  .input-group.error select {
+    border-color: #ff4d4f !important;
+  }
+  
+  /* Labels estáticos (para fecha y género) */
+  .static-label {
+    display: block;
+    color: #606770;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }

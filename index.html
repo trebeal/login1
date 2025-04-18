@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trebeal Game - Registro Seguro</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="brand-section">
+            <div class="brand-content">
+                <h1>Trebeal Game</h1>
+                <p>La mejor experiencia de juego segura</p>
+                <div class="brand-decoration">
+                    <div class="deco-circle deco-1"></div>
+                    <div class="deco-circle deco-2"></div>
+                    <div class="deco-circle deco-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <div class="form-toggle">
+                        <button id="login-toggle" class="active">Iniciar Sesión</button>
+                        <button id="register-toggle">Registrarse</button>
+                    </div>
+                    <div class="form-decoration">
+                        <div class="deco-dot dot-1"></div>
+                        <div class="deco-dot dot-2"></div>
+                        <div class="deco-dot dot-3"></div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Login (sin cambios) -->
+                <form id="login-form" class="form active">
+                    <h2><span>Bienvenido</span> de vuelta</h2>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Contraseña" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="options">
+                        <label>
+                            <input type="checkbox" id="remember-me"> Recordarme
+                        </label>
+                        <a href="#" id="show-change-password">Cambiar contraseña</a>
+                    </div>
+                    <button type="submit" class="btn">
+                        <span>Iniciar Sesión</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <div id="login-error" class="error-message"></div>
+                </form>
+
+                <!-- Formulario de Registro (sin cambios) -->
+                <form id="register-form" class="form">
+                    <h2><span>Crea tu</span> cuenta segura</h2>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="register-name" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="register-email" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-password" placeholder="Contraseña" required minlength="6">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-progress" id="password-strength-bar"></div>
+                        </div>
+                        <div class="strength-label" id="password-strength-label">Seguridad: Muy débil</div>
+                    </div>
+                    <div class="password-requirements">
+                        <p>La contraseña debe contener:</p>
+                        <ul>
+                            <li id="req-length"><i class="fas fa-circle"></i> Mínimo 8 caracteres</li>
+                            <li id="req-uppercase"><i class="fas fa-circle"></i> 1 letra mayúscula</li>
+                            <li id="req-number"><i class="fas fa-circle"></i> 1 número</li>
+                            <li id="req-special"><i class="fas fa-circle"></i> 1 carácter especial</li>
+                        </ul>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-confirm" placeholder="Confirmar contraseña" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <div class="terms">
+                        <label>
+                            <input type="checkbox" id="accept-terms" required> Acepto los <a href="#">términos y
+                                condiciones</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn" id="register-btn" disabled>
+                        <span>Registrarse</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <div id="register-error" class="error-message"></div>
+                    <div id="register-success" class="success-message"></div>
+                    <div class="login-link">
+                        <p>¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión</a></p>
+                    </div>
+                </form>
+
+                <!-- Nuevo Formulario de Cambio de Contraseña -->
+                <!-- Reemplaza el formulario de cambio de contraseña con este -->
+                <form id="change-password-form" class="form">
+                    <h2><span>Recuperar</span> Contraseña</h2>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="change-email" placeholder="Correo electrónico registrado" required>
+                    </div>
+
+                    <div class="instructions">
+                        <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-paper-plane"></i> Enviar Correo de Recuperación
+                    </button>
+
+                    <div id="change-password-error" class="error-message"></div>
+                    <div id="change-password-success" class="success-message"></div>
+
+                    <div class="login-link">
+                        <p><a href="#" id="show-login-from-change">Volver a Iniciar Sesión</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-alert-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="assets/js/login.js"></script>
+</body>
+
+</html>

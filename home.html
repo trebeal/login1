@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trebeal Game - Inicio</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-info p {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            margin: 0.5rem 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="brand-section">
+            <div class="brand-content">
+                <h1>Bienvenido a Trebeal Game</h1>
+                <p>¡Disfruta de tu experiencia de juego!</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-container">
+                <h2>Panel de Usuario</h2>
+                <div class="user-info">
+                    <p>Email: <span id="user-email"></span></p>
+                    <button id="change-password-btn" class="btn">
+                        <i class="fas fa-key"></i> Cambiar Contraseña
+                    </button>
+                    <button id="logout-btn" class="btn">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambio de contraseña -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Cambiar Contraseña</h2>
+            <form id="change-password-modal-form">
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="current-password-modal" placeholder="Contraseña actual" required>
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="new-password-modal" placeholder="Nueva contraseña" required
+                        minlength="6">
+                    <i class="fas fa-eye toggle-password"></i>
+                </div>
+
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div class="strength-progress" id="modal-strength-bar"></div>
+                    </div>
+                    <div class="strength-label" id="modal-strength-label">Seguridad: Muy débil</div>
+                </div>
+
+                <button type="submit" class="btn">
+                    <i class="fas fa-sync-alt"></i> Actualizar Contraseña
+                </button>
+                <div id="change-password-message" style="margin-top: 1rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    // Reemplaza TODO el script de home.html con este código
+
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+<script>
+    // Configuración Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyB66gvws1L8DskwnAoFeasVrSZc6Qg-IfY",
+        authDomain: "trebeal.github.io",
+        projectId: "trebealgame",
+        storageBucket: "trebealgame.appspot.com",
+        messagingSenderId: "908782066246",
+        appId: "1:908782066246:web:ee3b4772e44c2572c10847"
+    };
+    
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Elementos del DOM
+    const modal = document.getElementById('password-modal');
+    const changeBtn = document.getElementById('change-password-btn');
+    const closeBtn = document.querySelector('.close-modal');
+    const messageDiv = document.getElementById('change-password-message');
+
+    // Mostrar modal
+    changeBtn.onclick = () => {
+        document.getElementById('change-password-modal-form').reset();
+        document.getElementById('modal-strength-bar').style.width = '0%';
+        document.getElementById('modal-strength-label').textContent = 'Seguridad: Muy débil';
+        document.getElementById('modal-strength-label').style.color = '#ff4757';
+        modal.style.display = "block";
+    };
+
+    // Ocultar modal
+    closeBtn.onclick = () => {
+        modal.style.display = "none";
+        messageDiv.textContent = '';
+    };
+
+    // Cerrar al hacer clic fuera
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            messageDiv.textContent = '';
+        }
+    }
+
+    // Validación en tiempo real de fortaleza de contraseña
+    document.getElementById('new-password-modal').addEventListener('input', function() {
+        const password = this.value;
+        const validation = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        let strength = 0;
+        if (validation.length) strength += 25;
+        if (validation.uppercase) strength += 25;
+        if (validation.number) strength += 25;
+        if (validation.special) strength += 25;
+
+        const bar = document.getElementById('modal-strength-bar');
+        const label = document.getElementById('modal-strength-label');
+
+        bar.style.width = `${strength}%`;
+
+        if (strength < 50) {
+            bar.style.backgroundColor = '#ff4757';
+            label.textContent = 'Débil';
+            label.style.color = '#ff4757';
+        } else if (strength < 75) {
+            bar.style.backgroundColor = '#ffa502';
+            label.textContent = 'Moderada';
+            label.style.color = '#ffa502';
+        } else {
+            bar.style.backgroundColor = '#2ed573';
+            label.textContent = 'Fuerte';
+            label.style.color = '#2ed573';
+        }
+    });
+
+    // Manejar envío del formulario de cambio de contraseña
+    document.getElementById('change-password-modal-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const btn = this.querySelector('button');
+        const currentPassword = document.getElementById('current-password-modal').value;
+        const newPassword = document.getElementById('new-password-modal').value;
+        const user = auth.currentUser;
+
+        // Validaciones básicas
+        if (!currentPassword || !newPassword) {
+            messageDiv.textContent = 'Por favor completa todos los campos';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            messageDiv.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+            messageDiv.style.color = 'red';
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            messageDiv.textContent = '';
+            messageDiv.style.color = '';
+
+            // Paso 1: Reautenticar al usuario
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+            await user.reauthenticateWithCredential(credential);
+            
+            // Paso 2: Actualizar la contraseña
+            await user.updatePassword(newPassword);
+            
+            // Éxito
+            messageDiv.textContent = '¡Contraseña cambiada exitosamente!';
+            messageDiv.style.color = 'green';
+            
+            // Limpiar formulario después de 2 segundos
+            setTimeout(() => {
+                this.reset();
+                document.getElementById('modal-strength-bar').style.width = '0%';
+                document.getElementById('modal-strength-label').textContent = 'Seguridad: Muy débil';
+                document.getElementById('modal-strength-label').style.color = '#ff4757';
+                modal.style.display = "none";
+                messageDiv.textContent = '';
+            }, 2000);
+
+        } catch (error) {
+            console.error('Error al cambiar contraseña:', error);
+            
+            let message = 'Error al cambiar contraseña';
+            if (error.code === 'auth/wrong-password') {
+                message = 'Contraseña actual incorrecta';
+            } else if (error.code === 'auth/weak-password') {
+                message = 'La contraseña debe tener al menos 6 caracteres';
+            } else if (error.code === 'auth/requires-recent-login') {
+                message = 'La operación es sensible y requiere autenticación reciente. Vuelve a iniciar sesión.';
+            }
+            
+            messageDiv.textContent = message;
+            messageDiv.style.color = 'red';
+            
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt"></i> Actualizar Contraseña';
+        }
+    });
+
+    // Verificar autenticación
+    auth.onAuthStateChanged(user => {
+        if (!user) {
+            window.location.replace('index.html');
+        } else {
+            document.getElementById('user-email').textContent = user.email;
+        }
+    });
+
+    // Cerrar sesión
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        auth.signOut();
+    });
+
+    // Mostrar/ocultar contraseña
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const input = this.previousElementSibling;
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
+</body>
+</html>
