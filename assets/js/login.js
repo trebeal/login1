@@ -35,6 +35,65 @@ function showCustomAlert(message, type = 'error', duration = 5000) {
     }
 }
 
+// Función para obtener mensajes amigables de error
+function getFriendlyAuthError(error, context = 'general') {
+    const errorMessages = {
+        'login': {
+            'auth/invalid-login-credentials': 'Correo o contraseña incorrectos. Por favor verifica tus datos.',
+            'auth/user-not-found': 'No existe una cuenta con este correo electrónico.',
+            'auth/wrong-password': 'La contraseña es incorrecta.',
+            'auth/too-many-requests': 'Demasiados intentos fallidos. Por favor intenta más tarde.',
+            'auth/user-disabled': 'Tu cuenta ha sido desactivada. Contacta al administrador.'
+        },
+        'password-change': {
+            'auth/invalid-login-credentials': 'La contraseña actual es incorrecta.',
+            'auth/wrong-password': 'La contraseña actual es incorrecta.',
+            'auth/weak-password': 'La nueva contraseña debe tener al menos 6 caracteres.',
+            'auth/requires-recent-login': 'Tu sesión ha expirado. Por favor vuelve a iniciar sesión.'
+        },
+        'registration': {
+            'auth/email-already-in-use': 'Este correo electrónico ya está registrado.',
+            'auth/invalid-email': 'Por favor ingresa un correo electrónico válido.',
+            'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.'
+        },
+        'general': {
+            'auth/network-request-failed': 'Error de conexión. Verifica tu internet e intenta nuevamente.',
+            'default': 'Ocurrió un error inesperado. Por favor intenta nuevamente.'
+        }
+    };
+
+    // Buscar mensaje específico para el contexto
+    const contextMessages = errorMessages[context] || errorMessages['general'];
+    return contextMessages[error.code] || errorMessages['general']['default'] || error.message;
+}
+
+// Función para alternar entre formularios (VERSIÓN CORREGIDA)
+function switchForm(showFormId, hideFormIds) {
+    // Ocultar todos los formularios primero
+    hideFormIds.forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) form.classList.remove('active');
+    });
+    
+    // Mostrar el formulario solicitado
+    const showForm = document.getElementById(showFormId);
+    if (showForm) showForm.classList.add('active');
+    
+    // Actualizar estado de los botones de toggle
+    if (showFormId === 'login-form') {
+        document.getElementById('login-toggle').classList.add('active');
+        document.getElementById('register-toggle').classList.remove('active');
+    } else if (showFormId === 'register-form') {
+        document.getElementById('register-toggle').classList.add('active');
+        document.getElementById('login-toggle').classList.remove('active');
+    }
+    
+    // Limpiar mensajes de error
+    document.querySelectorAll('.error-message, .success-message').forEach(el => {
+        el.style.display = 'none';
+    });
+}
+
 // Función para validar contraseña
 function validatePassword(password) {
     const requirements = {
@@ -108,7 +167,8 @@ async function handleLogin() {
         if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
             showCustomAlert(`Demasiados intentos fallidos. Por favor espera 30 segundos.`, 'error');
         } else {
-            handleAuthError(error);
+            const friendlyMessage = getFriendlyAuthError(error, 'login');
+            showCustomAlert(friendlyMessage, 'error');
         }
     }
 }
@@ -160,7 +220,8 @@ async function handleRegistration() {
     } catch (error) {
         btn.classList.remove('loading');
         btn.disabled = false;
-        handleAuthError(error);
+        const friendlyMessage = getFriendlyAuthError(error, 'registration');
+        showCustomAlert(friendlyMessage, 'error');
     }
 }
 
@@ -186,13 +247,8 @@ async function handlePasswordRecovery() {
         document.getElementById('login-toggle').click();
         
     } catch (error) {
-        let message = 'Error al enviar correo de recuperación';
-        if (error.code === 'auth/user-not-found') {
-            message = 'No existe una cuenta con este correo';
-        } else if (error.code === 'auth/invalid-email') {
-            message = 'Correo electrónico inválido';
-        }
-        showCustomAlert(message, 'error');
+        const friendlyMessage = getFriendlyAuthError(error, 'general');
+        showCustomAlert(friendlyMessage, 'error');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Correo';
@@ -205,53 +261,10 @@ async function sendVerificationEmail(user) {
         await user.sendEmailVerification();
         return true;
     } catch (error) {
-        showCustomAlert('Error al enviar el correo de verificación: ' + error.message, 'error');
+        const friendlyMessage = getFriendlyAuthError(error, 'general');
+        showCustomAlert('Error al enviar el correo de verificación: ' + friendlyMessage, 'error');
         return false;
     }
-}
-
-// Función para manejar errores de autenticación
-function handleAuthError(error) {
-    let message = 'Error de autenticación';
-    let type = 'error';
-    
-    switch(error.code) {
-        case 'auth/invalid-email':
-            message = 'Por favor ingresa un correo electrónico válido';
-            type = 'warning';
-            break;
-        case 'auth/user-disabled':
-            message = 'Esta cuenta ha sido deshabilitada';
-            break;
-        case 'auth/user-not-found':
-            message = 'No existe una cuenta con este correo';
-            type = 'warning';
-            break;
-        case 'auth/wrong-password':
-            message = 'Contraseña incorrecta';
-            type = 'warning';
-            break;
-        case 'auth/email-already-in-use':
-            message = 'Este correo electrónico ya está registrado';
-            break;
-        case 'auth/weak-password':
-            message = 'La contraseña debe tener al menos 6 caracteres';
-            type = 'warning';
-            break;
-        case 'auth/operation-not-allowed':
-            message = 'Error de configuración. Contacta al administrador.';
-            break;
-        case 'auth/too-many-requests':
-            message = 'Demasiados intentos. Por favor espera antes de intentar nuevamente.';
-            break;
-        case 'auth/network-request-failed':
-            message = 'Error de conexión. Verifica tu internet.';
-            break;
-        default:
-            message = error.message;
-    }
-    
-    showCustomAlert(message, type);
 }
 
 // Función para alternar visibilidad de contraseña
@@ -263,57 +276,39 @@ function togglePasswordVisibility(icon) {
     icon.classList.toggle('fa-eye-slash');
 }
 
-// Función para alternar entre formularios
-function switchForm(activeTab, inactiveTab, activeForm, inactiveForms) {
-    inactiveForms = Array.isArray(inactiveForms) ? inactiveForms : [inactiveForms];
-    
-    if (activeTab) activeTab.classList.add('active');
-    if (inactiveTab) inactiveTab.classList.remove('active');
-    
-    activeForm.classList.add('active');
-    inactiveForms.forEach(form => form.classList.remove('active'));
-    
-    document.querySelectorAll('.error-message, .success-message').forEach(el => {
-        el.style.display = 'none';
-    });
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle entre formularios principales
     document.getElementById('login-toggle').addEventListener('click', function(e) {
         e.preventDefault();
-        switchForm(this, document.getElementById('register-toggle'), 
-                   document.getElementById('login-form'), 
-                   [document.getElementById('register-form'), document.getElementById('change-password-form')]);
+        switchForm('login-form', ['register-form', 'change-password-form']);
     });
     
     document.getElementById('register-toggle').addEventListener('click', function(e) {
         e.preventDefault();
-        switchForm(this, document.getElementById('login-toggle'), 
-                   document.getElementById('register-form'), 
-                   [document.getElementById('login-form'), document.getElementById('change-password-form')]);
+        switchForm('register-form', ['login-form', 'change-password-form']);
     });
     
+    // Mostrar formulario de login desde otros lugares
     document.getElementById('show-login').addEventListener('click', function(e) {
         e.preventDefault();
+        switchForm('login-form', ['register-form', 'change-password-form']);
         document.getElementById('login-toggle').click();
     });
     
     // Mostrar formulario de recuperación de contraseña
     document.getElementById('show-change-password').addEventListener('click', function(e) {
         e.preventDefault();
-        switchForm(null, null, 
-                   document.getElementById('change-password-form'), 
-                   [document.getElementById('login-form'), document.getElementById('register-form')]);
+        switchForm('change-password-form', ['login-form', 'register-form']);
     });
     
     // Volver a login desde recuperación de contraseña
     document.getElementById('show-login-from-change').addEventListener('click', function(e) {
         e.preventDefault();
+        switchForm('login-form', ['register-form', 'change-password-form']);
         document.getElementById('login-toggle').click();
     });
-    
+
     // Mostrar/ocultar contraseña
     document.querySelectorAll('.toggle-password').forEach(icon => {
         icon.addEventListener('click', function() {
